@@ -13,8 +13,8 @@ Ecu = car.CarParams.Ecu
 
 
 class CarControllerParams:
-  ACCEL_MIN = -3.5 # m/s
-  ACCEL_MAX = 2.0 # m/s
+  ACCEL_MIN = -10.0 # m/s
+  ACCEL_MAX = 5.0 # m/s
 
   def __init__(self, CP, vEgoRaw=100.):
     self.STEER_DELTA_UP = 3
@@ -27,7 +27,7 @@ class CarControllerParams:
 
     if CP.carFingerprint in CANFD_CAR:
       upstream_taco = CP.safetyConfigs[-1].safetyParam & Panda.FLAG_HYUNDAI_UPSTREAM_TACO
-      self.STEER_MAX = 270 if not upstream_taco else 384 if vEgoRaw < 11. else 330
+      self.STEER_MAX = 400 if not upstream_taco else 440 if vEgoRaw < 11. else 330
       self.STEER_DRIVER_ALLOWANCE = 250 if not upstream_taco else 350
       self.STEER_DRIVER_MULTIPLIER = 2
       self.STEER_THRESHOLD = 250 if not upstream_taco else 350
@@ -43,13 +43,13 @@ class CarControllerParams:
 
     # these cars have significantly more torque than most HKG; limit to 70% of max
     elif CP.flags & HyundaiFlags.ALT_LIMITS:
-      self.STEER_MAX = 270
+      self.STEER_MAX = 400
       self.STEER_DELTA_UP = 2
       self.STEER_DELTA_DOWN = 3
 
     # Default for most HKG
     else:
-      self.STEER_MAX = 384
+      self.STEER_MAX = 440
 
 
 class HyundaiFlags(IntFlag):
@@ -481,7 +481,7 @@ class CAR(Platforms):
   KIA_STINGER = HyundaiPlatformConfig(
     [HyundaiCarDocs("Kia Stinger 2018-20", video_link="https://www.youtube.com/watch?v=MJ94qoofYw0",
                     car_parts=CarParts.common([CarHarness.hyundai_c]))],
-    CarSpecs(mass=1825, wheelbase=2.78, steerRatio=14.4 * 1.15)  # 15% higher at the center seems reasonable
+    CarSpecs(mass=2041, wheelbase=2.89, steerRatio=14.4 * 1.20)  # 20% higher at the center seems reasonable
   )
   KIA_STINGER_2022 = HyundaiPlatformConfig(
     [HyundaiCarDocs("Kia Stinger 2022-23", "All", car_parts=CarParts.common([CarHarness.hyundai_k]))],
